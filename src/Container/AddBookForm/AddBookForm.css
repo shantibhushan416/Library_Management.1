@@ -1,0 +1,13 @@
+h1 {
+  font-family: "Aboreto cursive";
+  font-family: "Aboreto, cursive";
+  margin-top: 3rem;
+}
+.form {
+  background-color: #6610f2;
+}
+.borders {
+  background-color: #6610f2;
+  color: black;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}

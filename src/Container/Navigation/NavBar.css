@@ -1,0 +1,13 @@
+.NavBar {
+  background-color: #6610f2;
+  box-shadow: 0px 4px 4px 1px rgba(0, 0, 255, 0.2);
+}
+.NavBrand {
+  font-family: "Aboreto", cursive;
+}
+
+.form {
+  background-color: #6610f2;
+  color: black;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
