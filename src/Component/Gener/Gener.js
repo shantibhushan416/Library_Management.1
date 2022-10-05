@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faPlus, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import axios from "../../Container/Axios/Axios";
-import Popup from "../../Container/Modal/Modal";
-import DeleteModal from "../../Container/DeleteModal/DeleteModal";
-import EditModal from "../../Container/EditModal/EditModal";
+import Popup from "../../Container/BranchModal/Modal";
+import DeleteModal from "../../Container/BranchModal/DeleteModal";
+import EditModal from "../../Container/BranchModal/EditModal";
 import "./Gener.css";
 
 const Gener = (props) => {
@@ -80,19 +80,20 @@ const Gener = (props) => {
     setBranchId(branchList[id]._id);
   };
 
-  const updateBranch = (id) => {
+  const updateBranch = async () => {
     console.log(branch_name, branchId);
-
-    axios
-      .put(`/api/branch/${id}`)
-      .then((res) => {
-        console.log(res.data);
-        getApiData();
-        editPopup();
-      })
-      .catch((err) => {
-        console.log(err);
+    let branchName = { branch_name };
+    try {
+      const data = await axios.put(`/api/branch/${branchId}`, branchName);
+      console.log(data);
+      setBranchList((olditem) => {
+        return [olditem, branch_name];
       });
+      getApiData();
+      editPopup();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

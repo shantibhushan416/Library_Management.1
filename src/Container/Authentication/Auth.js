@@ -1,5 +1,4 @@
 import React from "react";
-import "./Auth.css";
 import {
   Card,
   CardBody,
@@ -9,6 +8,7 @@ import {
   Label,
   Button,
 } from "reactstrap";
+import "./Auth.css";
 
 const Auth = (props) => (
   <div className="Auth">
