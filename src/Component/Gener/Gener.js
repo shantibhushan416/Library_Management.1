@@ -9,17 +9,35 @@ import "./Gener.css";
 
 const Gener = (props) => {
   const [branchList, setBranchList] = useState([]);
+  const [branch_name, setBranch_Name] = useState("");
 
-  useEffect(() => {
+  const getApiData = async () => {
+    try {
+      const res = await axios.get("/api/branch?page=1&pageSize=10");
+      setBranchList(res.data.data.docs);
+    } catch (err) {
+      console.log(console.log(err.message));
+    }
+  };
+
+  const onSubmitHAndler = () => {
+    if (branch_name.trim === "") return;
+
+    let branchName = { branch_name };
+    console.log({ branch_name });
     axios
-      .get("/api/branch?page=1&pageSize=10")
+      .post("/api/branch?page=1&pageSize=10", branchName)
       .then((res) => {
-        console.log(res.data.data.docs);
-        setBranchList(res.data.data.docs);
+        console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
+    setBranch_Name("");
+  };
+
+  useEffect(() => {
+    getApiData();
   }, []);
 
   return (
@@ -42,7 +60,11 @@ const Gener = (props) => {
         })}
 
         <ListGroupItem className="d-flex justify-content-center">
-          <Popup />
+          <Popup
+            clicked={onSubmitHAndler}
+            branch={branch_name}
+            changed={(event) => setBranch_Name(event.target.value)}
+          />
         </ListGroupItem>
       </ListGroup>
     </Card>
