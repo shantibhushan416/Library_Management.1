@@ -2,12 +2,12 @@ import React from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
 const DeleteModal = (props) => {
-  const { modal, toggle, id, branchItem, Delete } = props;
+  const { modal, toggle, id, Delete, deleteItem } = props;
   return (
     <div className="border border-0">
       <Modal isOpen={modal} backdrop={false} toggle={toggle} {...props}>
         <ModalHeader toggle={toggle}>Delete Branch</ModalHeader>
-        <ModalBody>Are you sure you want to delete "{branchItem} "?</ModalBody>
+        <ModalBody>Are you sure you want to delete ?</ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => Delete(id)}>
             Delete

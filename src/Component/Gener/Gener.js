@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faPlus, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import axios from "../../Container/Axios/Axios";
-import Popup from "../../Container/BranchModal/Modal";
+import Popup from "../../Container/BranchModal/AddModal";
 import DeleteModal from "../../Container/BranchModal/DeleteModal";
 import EditModal from "../../Container/BranchModal/EditModal";
 import "./Gener.css";
@@ -17,11 +17,11 @@ const Gener = (props) => {
   const [deletePopup, setDeletePopup] = useState(false);
   const [editpopup, setEditPopup] = useState(false);
   const [branchId, setBranchId] = useState("");
+  const [deletebranch, setDeleteBranch] = useState("");
 
   const getApiData = async () => {
     try {
       const res = await axios.get("/api/branch?page=1&pageSize=10");
-      console.log(res.data.data.docs);
       setBranchList(res.data.data.docs);
       // setBranch_Name(res.data.data.docs[0].branch_name);
       // setBranchId(res.data.data.docs[0]._id);
@@ -41,7 +41,6 @@ const Gener = (props) => {
     if (branch_name.trim === "") return;
 
     let branchName = { branch_name };
-    console.log({ branch_name });
     axios
       .post("/api/branch/", branchName)
       .then((res) => {
@@ -55,13 +54,13 @@ const Gener = (props) => {
   };
   /*------------*/
 
-  const DeleteConfirmation = (id) => {
+  const DeleteConfirmation = (item) => {
     setDeletePopup(!deletePopup);
+    setDeleteBranch(item);
   };
   const Delete = async (id) => {
     try {
-      const data = await axios.delete(`/api/branch/${id}`);
-      console.log(data);
+      await axios.delete(`/api/branch/${id}`);
       getApiData();
       DeleteConfirmation();
     } catch (error) {
@@ -74,18 +73,15 @@ const Gener = (props) => {
     setEditPopup(!editpopup);
   };
   const selectBranch = (id) => {
-    console.log(branchList[id]);
     editPopup();
     setBranch_Name(branchList[id].branch_name);
     setBranchId(branchList[id]._id);
   };
 
   const updateBranch = async () => {
-    console.log(branch_name, branchId);
     let branchName = { branch_name };
     try {
-      const data = await axios.put(`/api/branch/${branchId}`, branchName);
-      console.log(data);
+      await axios.put(`/api/branch/${branchId}`, branchName);
       setBranchList((olditem) => {
         return [olditem, branch_name];
       });
@@ -115,7 +111,10 @@ const Gener = (props) => {
                   onClick={() => selectBranch(index)}
                   className="me-1"
                 />
-                <FontAwesomeIcon onClick={DeleteConfirmation} icon="trash" />
+                <FontAwesomeIcon
+                  onClick={() => DeleteConfirmation(item.branch_name)}
+                  icon="trash"
+                />
                 <EditModal
                   modal={editpopup}
                   toggle={editPopup}
@@ -130,7 +129,7 @@ const Gener = (props) => {
                   toggle={DeleteConfirmation}
                   id={item._id}
                   Delete={Delete}
-                  branchItem={item.branch_name}
+                  deleteItem={deletebranch}
                 />
               </div>
             </ListGroupItem>

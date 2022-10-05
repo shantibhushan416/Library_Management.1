@@ -1,6 +1,14 @@
 import React from "react";
-import { Card, CardTitle, Container, Row, Col, Button } from "reactstrap";
-import { Navigate } from "react-router-dom";
+import {
+  Card,
+  CardTitle,
+  Container,
+  Row,
+  Col,
+  Button,
+  Input,
+} from "reactstrap";
+import { Navigate, Link } from "react-router-dom";
 import Genre from "../../Component/Gener/Gener";
 import Table from "../../Component/Table/Table";
 import "./Lists.css";
@@ -27,7 +35,15 @@ const List = (props) => {
                 >
                   <h3 style={{ margin: "0" }}>Book List</h3>
 
-                  <Button color="primary">Add Books</Button>
+                  <div className="d-flex flex-row">
+                    <Input
+                      placeholder="search-book"
+                      style={{ width: "9rem", marginRight: "1rem" }}
+                    />
+                    <Link to="/add-book">
+                      <Button color="primary">Add Books</Button>
+                    </Link>
+                  </div>
                 </Container>
               </CardTitle>
               <Table />

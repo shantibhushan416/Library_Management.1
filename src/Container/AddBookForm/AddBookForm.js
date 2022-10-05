@@ -1,12 +1,13 @@
 import React from "react";
 import { Form, FormGroup, Row, Col, Label, Input, Button } from "reactstrap";
+import { Link } from "react-router-dom";
 import "./AddBookForm.css";
 const AddBookForm = (props) => (
-  <div className="back">
+  <div className="back ">
     <h1 className="text-center">Add Book</h1>
     <Form
       style={{ margin: "1rem  10rem", padding: "1rem 3rem" }}
-      className="form rounded-3"
+      className="form rounded-3 "
     >
       <Row>
         <Col md={6}>
@@ -63,7 +64,9 @@ const AddBookForm = (props) => (
           </FormGroup>
         </Col>
       </Row>
-      <Button color="info">Submit</Button>
+      <Link to="/">
+        <Button color="info">Submit</Button>
+      </Link>
     </Form>
   </div>
 );

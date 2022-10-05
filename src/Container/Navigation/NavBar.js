@@ -8,7 +8,10 @@ function Navigation() {
   return (
     <div>
       <Navbar className="NavBar">
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
+
         <NavbarBrand className="text-light NavBrand ms-2">
           LIBRARY MANAGEMENT
         </NavbarBrand>
