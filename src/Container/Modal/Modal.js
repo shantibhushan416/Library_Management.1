@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 
 import {
   Button,
@@ -13,32 +10,28 @@ import {
 } from "reactstrap";
 
 function Popup(props) {
-  const [modal, setModal] = useState(false);
-
-  const toggle = () => {
-    setModal(!modal);
-  };
-
   return (
     <div>
-      <FontAwesomeIcon onClick={toggle} icon={faPlus} />
-
-      <Modal isOpen={modal} toggle={toggle} {...props}>
-        <ModalHeader toggle={toggle}>Branch Name</ModalHeader>
+      <Modal
+        isOpen={props.modal}
+        backdrop={false}
+        toggle={props.toggle}
+        {...props}
+      >
+        <ModalHeader toggle={props.toggle}>Add Branch</ModalHeader>
         <ModalBody>
           <Input
             type="text"
-            value={props.branch}
             name="branchName"
             onChange={props.changed}
             placeholder="Branch Name"
           />
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={props.clicked}>
+          <Button color="primary" onClick={props.addBranch}>
             Add
           </Button>
-          <Button color="secondary" onClick={toggle}>
+          <Button color="secondary" onClick={props.toggle}>
             Cancel
           </Button>
         </ModalFooter>

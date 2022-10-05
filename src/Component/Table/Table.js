@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import "./Table.css";

@@ -1,8 +1,9 @@
 import React from "react";
-import "./Lists.css";
 import { Card, CardTitle, Container, Row, Col, Button } from "reactstrap";
+import { Navigate } from "react-router-dom";
 import Genre from "../../Component/Gener/Gener";
 import Table from "../../Component/Table/Table";
+import "./Lists.css";
 
 const List = (props) => {
   return (
