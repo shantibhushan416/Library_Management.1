@@ -54,9 +54,10 @@ const Gener = (props) => {
   };
   /*------------*/
 
-  const DeleteConfirmation = (item) => {
+  const DeleteConfirmation = (id) => {
     setDeletePopup(!deletePopup);
-    setDeleteBranch(item);
+    setBranch_Name(branchList[id].branch_name);
+    setBranchId(branchList[id]._id);
   };
   const Delete = async (id) => {
     try {
@@ -112,7 +113,7 @@ const Gener = (props) => {
                   className="me-1"
                 />
                 <FontAwesomeIcon
-                  onClick={() => DeleteConfirmation(item.branch_name)}
+                  onClick={() => DeleteConfirmation(index)}
                   icon="trash"
                 />
                 <EditModal
@@ -127,9 +128,9 @@ const Gener = (props) => {
                 <DeleteModal
                   modal={deletePopup}
                   toggle={DeleteConfirmation}
-                  id={item._id}
+                  id={branchId}
                   Delete={Delete}
-                  deleteItem={deletebranch}
+                  deleteItem={branch_name}
                 />
               </div>
             </ListGroupItem>

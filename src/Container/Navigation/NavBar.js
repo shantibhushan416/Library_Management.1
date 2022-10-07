@@ -1,24 +1,33 @@
 import React from "react";
 import "./NavBar.css";
 import Logo from "../Logo/Logo";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Navbar, NavbarBrand, Nav } from "reactstrap";
 
 function Navigation() {
+  const navigate = useNavigate();
+  const goHomePage = () => {
+    navigate("/");
+  };
+  const goToAuth = () => {
+    navigate("/auth");
+  };
   return (
     <div>
       <Navbar className="NavBar">
-        <Link to="/">
-          <Logo />
-        </Link>
+        <Logo clicked={goHomePage} />
 
         <NavbarBrand className="text-light NavBrand ms-2">
           LIBRARY MANAGEMENT
         </NavbarBrand>
         <Nav className="me-auto" navbar></Nav>
-        <Link to="/" style={{ textDecoration: "none" }} className="text-light">
+        <li
+          onClick={goToAuth}
+          style={{ listStyle: "none", cursor: "pointer" }}
+          className="text-light"
+        >
           Log Out
-        </Link>
+        </li>
       </Navbar>
     </div>
   );

@@ -1,19 +1,17 @@
 import React from "react";
-import {
-  Card,
-  CardTitle,
-  Container,
-  Row,
-  Col,
-  Button,
-  Input,
-} from "reactstrap";
-import { Navigate, Link } from "react-router-dom";
+import { Card, CardTitle, Container, Row, Col, Button } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 import Genre from "../../Component/Gener/Gener";
 import Table from "../../Component/Table/Table";
+import Search from "../../Component/Search/Search";
 import "./Lists.css";
 
 const List = (props) => {
+  const navigate = useNavigate();
+  const goToBookForm = () => {
+    navigate("/add-book");
+  };
+
   return (
     <>
       <Container fluid className=" mt-3">
@@ -36,13 +34,10 @@ const List = (props) => {
                   <h3 style={{ margin: "0" }}>Book List</h3>
 
                   <div className="d-flex flex-row">
-                    <Input
-                      placeholder="search-book"
-                      style={{ width: "9rem", marginRight: "1rem" }}
-                    />
-                    <Link to="/add-book">
-                      <Button color="primary">Add Books</Button>
-                    </Link>
+                    <Search />
+                    <Button color="primary" onClick={goToBookForm}>
+                      Add Books
+                    </Button>
                   </div>
                 </Container>
               </CardTitle>

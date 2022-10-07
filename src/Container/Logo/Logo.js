@@ -4,7 +4,7 @@ import "./Logo.css";
 
 const Logo = (props) => (
   <div className="Logo">
-    <img alt="logo" src={logo} />
+    <img onClick={props.clicked} alt="logo" src={logo} />
   </div>
 );
 

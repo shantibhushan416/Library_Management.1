@@ -12,7 +12,13 @@ const EditModal = (props) => {
   const { modal, toggle, branchname, changed, branchId, edit } = props;
   return (
     <div className="border border-0">
-      <Modal isOpen={modal} backdrop={false} toggle={toggle} {...props}>
+      <Modal
+        isOpen={modal}
+        backdrop={false}
+        keyboard={true}
+        toggle={toggle}
+        {...props}
+      >
         <ModalHeader toggle={toggle}>Edit Branch</ModalHeader>
         <ModalBody>
           <Input value={branchname} onChange={changed} />

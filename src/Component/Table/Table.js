@@ -8,11 +8,10 @@ import "./Table.css";
 
 export default function Table() {
   const [booklist, setBookList] = useState([]);
-  const getApiData = async () => {
+
+  const getApiData = async (url) => {
     try {
-      const res = await axios.get(
-        "https://librarybackendapp.herokuapp.com/api/book?page=1&pageSize=20"
-      );
+      const res = await axios.get(url);
       console.log(res.data.data.docs);
       setBookList(res.data.data.docs);
     } catch (err) {
@@ -21,17 +20,22 @@ export default function Table() {
   };
 
   useEffect(() => {
-    getApiData();
+    getApiData(
+      "https://librarybackendapp.herokuapp.com/api/book?page=1&pageSize=20"
+    );
   }, []);
   const getColumns = () => {
     return [
       { Header: <strong>Books Name</strong>, accessor: "book_name" },
-      { Header: <strong>Subject</strong>, accessor: "subject" },
+      { Header: <strong>Author</strong>, accessor: "author" },
+      { Header: <strong>Publisher</strong>, accessor: "publisher" },
+      { Header: <strong>Description</strong>, accessor: "description" },
+      { Header: <strong>Stock</strong>, accessor: "stock" },
       {
         Header: <strong>Action</strong>,
         Cell: (props) => (
           <div className="text-center">
-            <FontAwesomeIcon icon={faPenToSquare} className="me-1" />
+            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
             <FontAwesomeIcon icon={faTrash} />
           </div>
         ),
@@ -48,11 +52,11 @@ export default function Table() {
         columns={getColumns()}
         minRows={5}
         defaultPageSize={10}
-        className="Table -striped -highlight rounded-1 me-0"
+        className="Table -striped -highlight rounded-1 me-0 text-center"
         manual
         sortable={false}
         showPageSizeOptions={false}
-        noDataText="No user found"
+        noDataText="No book found"
         pages={2}
         loading={false}
         page={0}

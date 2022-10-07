@@ -7,7 +7,7 @@ const DeleteModal = (props) => {
     <div className="border border-0">
       <Modal isOpen={modal} backdrop={false} toggle={toggle} {...props}>
         <ModalHeader toggle={toggle}>Delete Branch</ModalHeader>
-        <ModalBody>Are you sure you want to delete ?</ModalBody>
+        <ModalBody>Are you sure you want to delete "{deleteItem}"?</ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => Delete(id)}>
             Delete
