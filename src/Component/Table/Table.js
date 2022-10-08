@@ -1,29 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ReactTable from "react-table";
-import axios from "../../Container/Axios/Axios";
+import { useNavigate } from "react-router-dom";
 import "react-table/react-table.css";
 import "./Table.css";
 
-export default function Table() {
-  const [booklist, setBookList] = useState([]);
+export default function Table(props) {
+  const { booklist, pageNo, pageSize, totalBooks, loading, onPageChange } =
+    props;
 
-  const getApiData = async (url) => {
-    try {
-      const res = await axios.get(url);
-      console.log(res.data.data.docs);
-      setBookList(res.data.data.docs);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    getApiData(
-      "https://librarybackendapp.herokuapp.com/api/book?page=1&pageSize=20"
-    );
-  }, []);
   const getColumns = () => {
     return [
       { Header: <strong>Books Name</strong>, accessor: "book_name" },
@@ -33,14 +21,18 @@ export default function Table() {
       { Header: <strong>Stock</strong>, accessor: "stock" },
       {
         Header: <strong>Action</strong>,
-        Cell: (props) => (
-          <div className="text-center">
-            <FontAwesomeIcon icon={faPenToSquare} className="me-2" />
-            <FontAwesomeIcon icon={faTrash} />
-          </div>
-        ),
-
-        accessor: "edit",
+        Cell: ({ original }) => {
+          return (
+            <div className="text-center">
+              <FontAwesomeIcon
+                onClick={() => navigate(`/add-book/${original._id}`)}
+                icon={faPenToSquare}
+                className="me-2"
+              />
+              <FontAwesomeIcon icon={faTrash} />
+            </div>
+          );
+        },
       },
     ];
   };
@@ -57,10 +49,10 @@ export default function Table() {
         sortable={false}
         showPageSizeOptions={false}
         noDataText="No book found"
-        pages={2}
-        loading={false}
-        page={0}
-        onPageChange={() => {}}
+        pages={Math.ceil(totalBooks / pageSize)}
+        loading={loading}
+        page={pageNo - 1}
+        onPageChange={(page) => onPageChange(page + 1)}
       />
     </div>
   );

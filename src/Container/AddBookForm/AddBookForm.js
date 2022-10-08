@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Form, FormGroup, Row, Col, Label, Input, Button } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "../Axios/Axios";
 
 import "./AddBookForm.css";
 const AddBookForm = (props) => {
+  const [branchList, setBranchList] = useState([]);
   const [book_name, setBook_Name] = useState("");
   const [branch_id, setBook_id] = useState("");
   const [description, setDescription] = useState("");
   const [stock, setStock] = useState("");
   const [author, setAuthor] = useState("");
   const [publisher, setPublisher] = useState("");
+
+  const params = useParams();
+  console.log(params);
 
   const navigate = useNavigate();
   const goToHomePage = () => {
@@ -26,8 +30,19 @@ const AddBookForm = (props) => {
     }
   };
 
+  const getApiDatas = async () => {
+    try {
+      const res = await axios.get("/api/branch?page=1&pageSize=10");
+      console.log(res.data.data.docs);
+      setBranchList(res.data.data.docs);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     getApiData();
+    getApiDatas();
   }, []);
 
   const onSubmitHAndler = async () => {

@@ -1,15 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardTitle, Container, Row, Col, Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Genre from "../../Component/Gener/Gener";
 import Table from "../../Component/Table/Table";
 import Search from "../../Component/Search/Search";
+import axios from "../Axios/Axios";
 import "./Lists.css";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const List = (props) => {
   const navigate = useNavigate();
+
+  const [state, setState] = useState({ pageNo: 1, pageSize: 10, search: "" });
+  const [booklist, setBookList] = useState([]);
+  const [totalBooks, setTotalBooks] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getBookList();
+  }, []);
+
+  const getBookList = async (newData) => {
+    const newState = { ...state, ...newData };
+    setState(newState);
+    try {
+      setLoading(true);
+      const { data } = await axios({
+        method: "GET",
+        url: "/api/book",
+        params: newState,
+      });
+      console.log(data);
+
+      if (data.statusCode === 200) {
+        const { docs, total } = data.data;
+        setBookList(docs);
+        setTotalBooks(total);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goToBookForm = () => {
-    navigate("/add-book");
+    navigate("/add-book/new");
   };
 
   return (
@@ -41,7 +80,13 @@ const List = (props) => {
                   </div>
                 </Container>
               </CardTitle>
-              <Table />
+              <Table
+                {...state}
+                booklist={booklist}
+                totalBooks={totalBooks}
+                loading={loading}
+                onPageChange={(pageNo) => getBookList({ pageNo })}
+              />
             </Card>
           </Col>
         </Row>

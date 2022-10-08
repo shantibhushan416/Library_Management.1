@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-
+import { toast } from "react-toastify";
 import { Card, CardHeader, ListGroup, ListGroupItem } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faPlus, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPenToSquare, faL } from "@fortawesome/free-solid-svg-icons";
 import axios from "../../Container/Axios/Axios";
-import Popup from "../../Container/BranchModal/AddModal";
+import AddModal from "../../Container/BranchModal/AddModal";
 import DeleteModal from "../../Container/BranchModal/DeleteModal";
 import EditModal from "../../Container/BranchModal/EditModal";
 import "./Gener.css";
@@ -13,11 +13,12 @@ import "./Gener.css";
 const Gener = (props) => {
   const [branchList, setBranchList] = useState([]);
   const [branch_name, setBranch_Name] = useState("");
-  const [branchpopup, setBranchPopup] = useState(false);
-  const [deletePopup, setDeletePopup] = useState(false);
-  const [editpopup, setEditPopup] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [branchId, setBranchId] = useState("");
-  const [deletebranch, setDeleteBranch] = useState("");
+  const [toEditBranchName, setToEditBranchName] = useState("");
+  const [actionLoader, setActionLoader] = useState(false);
 
   const getApiData = async () => {
     try {
@@ -33,121 +34,135 @@ const Gener = (props) => {
     getApiData();
   }, []);
   /*------------*/
-  const popup = () => {
-    setBranchPopup(!branchpopup);
+  const toggleAddModal = () => {
+    setAddModalOpen((prev) => !prev);
   };
 
-  const onSubmitHAndler = () => {
-    if (branch_name.trim === "") return;
-
-    let branchName = { branch_name };
-    axios
-      .post("/api/branch/", branchName)
-      .then((res) => {
-        getApiData();
-        popup();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setBranch_Name("");
-  };
-  /*------------*/
-
-  const DeleteConfirmation = (id) => {
-    setDeletePopup(!deletePopup);
-    setBranch_Name(branchList[id].branch_name);
-    setBranchId(branchList[id]._id);
-  };
-  const Delete = async (id) => {
+  const onSubmitHandler = async (branchName) => {
     try {
-      await axios.delete(`/api/branch/${id}`);
-      getApiData();
-      DeleteConfirmation();
-    } catch (error) {
-      console.log(error);
+      setActionLoader(true);
+      const { data } = await axios.post("/api/branch/", {
+        branch_name: branchName,
+      });
+      if (data.statusCode === 200) {
+        getApiData();
+        toggleAddModal();
+        toast.success(data.message);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setActionLoader(false);
     }
   };
   /*------------*/
 
-  const editPopup = () => {
-    setEditPopup(!editpopup);
-  };
-  const selectBranch = (id) => {
-    editPopup();
-    setBranch_Name(branchList[id].branch_name);
-    setBranchId(branchList[id]._id);
+  const handleDeleteBranch = (branchId) => {
+    setBranchId(branchId);
+    toggleDeleteModal();
   };
 
-  const updateBranch = async () => {
-    let branchName = { branch_name };
+  const toggleDeleteModal = () => {
+    setDeleteModalOpen((prev) => !prev);
+  };
+
+  const onDeleteConfirmation = async () => {
     try {
-      await axios.put(`/api/branch/${branchId}`, branchName);
-      setBranchList((olditem) => {
-        return [olditem, branch_name];
-      });
-      getApiData();
-      editPopup();
+      setActionLoader(true);
+      const { data } = await axios.delete(`/api/branch/${branchId}`);
+      if (data.statusCode === 200) {
+        getApiData();
+        toggleDeleteModal();
+        toast.success(data.message);
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setActionLoader(false);
+    }
+  };
+  /*------------*/
+
+  const toggleEditModal = () => {
+    setEditModalOpen((prev) => !prev);
+  };
+  const handleEditBranch = (branchId, branchName) => {
+    setToEditBranchName(branchName);
+    setBranchId(branchId);
+    toggleEditModal();
+  };
+
+  const updateBranch = async (branchName) => {
+    try {
+      setActionLoader(true);
+      const { data } = await axios.put(`/api/branch/${branchId}`, {
+        branch_name: branchName,
+      });
+      if (data.statusCode === 200) {
+        getApiData();
+        toggleEditModal();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setActionLoader(false);
     }
   };
 
   return (
-    <Card style={{ width: "80%" }}>
-      <CardHeader>All</CardHeader>
-      <ListGroup flush>
-        {branchList.map((item, index) => {
-          return (
-            <ListGroupItem
-              key={index}
-              id={index}
-              className="d-flex flex-row justify-content-between"
-            >
-              {item.branch_name}
+    <>
+      <AddModal
+        actionLoader={actionLoader}
+        onSubmit={onSubmitHandler}
+        isOpen={addModalOpen}
+        toggle={toggleAddModal}
+      />
+      <EditModal
+        actionLoader={actionLoader}
+        isOpen={editModalOpen}
+        toggle={toggleEditModal}
+        onSubmit={updateBranch}
+        initialBranchName={toEditBranchName}
+      />
+      <DeleteModal
+        actionLoader={actionLoader}
+        isOpen={deleteModalOpen}
+        toggle={toggleDeleteModal}
+        onConfirmation={onDeleteConfirmation}
+      />
+      <Card style={{ width: "80%" }}>
+        <CardHeader>All</CardHeader>
+        <ListGroup flush>
+          {branchList.map((item, index) => {
+            return (
+              <ListGroupItem
+                key={index}
+                id={index}
+                className="d-flex flex-row justify-content-between"
+              >
+                {item.branch_name}
 
-              <div>
-                <FontAwesomeIcon
-                  icon={faPenToSquare}
-                  onClick={() => selectBranch(index)}
-                  className="me-1"
-                />
-                <FontAwesomeIcon
-                  onClick={() => DeleteConfirmation(index)}
-                  icon="trash"
-                />
-                <EditModal
-                  modal={editpopup}
-                  toggle={editPopup}
-                  changed={(e) => setBranch_Name(e.target.value)}
-                  branchname={branch_name}
-                  key={index}
-                  branchId={branchId}
-                  edit={updateBranch}
-                />
-                <DeleteModal
-                  modal={deletePopup}
-                  toggle={DeleteConfirmation}
-                  id={branchId}
-                  Delete={Delete}
-                  deleteItem={branch_name}
-                />
-              </div>
-            </ListGroupItem>
-          );
-        })}
+                <div>
+                  <FontAwesomeIcon
+                    icon={faPenToSquare}
+                    onClick={() => handleEditBranch(item._id, item.branch_name)}
+                    className="me-1"
+                  />
+                  <FontAwesomeIcon
+                    onClick={() => handleDeleteBranch(item._id)}
+                    icon="trash"
+                  />
+                </div>
+              </ListGroupItem>
+            );
+          })}
 
-        <ListGroupItem className="d-flex justify-content-center">
-          <FontAwesomeIcon icon={faPlus} onClick={popup} />
-          <Popup
-            changed={(event) => setBranch_Name(event.target.value)}
-            addBranch={onSubmitHAndler}
-            modal={branchpopup}
-            toggle={popup}
-          />
-        </ListGroupItem>
-      </ListGroup>
-    </Card>
+          <ListGroupItem className="d-flex justify-content-center">
+            <FontAwesomeIcon icon={faPlus} onClick={toggleAddModal} />
+          </ListGroupItem>
+        </ListGroup>
+      </Card>
+    </>
   );
 };
 

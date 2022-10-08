@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Button,
@@ -7,28 +7,40 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  Spinner,
 } from "reactstrap";
 
-function Popup(props) {
+function AddModal(props) {
+  const { isOpen, toggle, onSubmit, actionLoader } = props;
+  const [branchName, setBranchName] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      setBranchName("");
+    }
+  }, [isOpen]);
+
+  const handleAddBranch = () => {
+    if (!branchName.trim()) return;
+    onSubmit(branchName);
+  };
+
   return (
     <div>
-      <Modal
-        isOpen={props.modal}
-        backdrop={false}
-        toggle={props.toggle}
-        {...props}
-      >
-        <ModalHeader toggle={props.toggle}>Add Branch</ModalHeader>
+      <Modal isOpen={isOpen} backdrop={false} toggle={toggle}>
+        <ModalHeader toggle={toggle}>Add Branch</ModalHeader>
         <ModalBody>
           <Input
+            value={branchName}
             type="text"
             name="branchName"
-            onChange={props.changed}
+            onChange={(e) => setBranchName(e.target.value)}
             placeholder="Branch Name"
           />
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={props.addBranch}>
+          <Button color="primary" onClick={handleAddBranch}>
+            {actionLoader && <Spinner className="me-2" size="sm" />}
             Add
           </Button>
           <Button color="secondary" onClick={props.toggle}>
@@ -40,4 +52,4 @@ function Popup(props) {
   );
 }
 
-export default Popup;
+export default AddModal;
