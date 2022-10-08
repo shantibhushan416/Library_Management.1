@@ -9,7 +9,7 @@ import "./Table.css";
 export default function Table(props) {
   const { booklist, pageNo, pageSize, totalBooks, loading, onPageChange } =
     props;
-
+  console.log(booklist);
   const navigate = useNavigate();
 
   const getColumns = () => {

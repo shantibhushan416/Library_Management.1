@@ -2,21 +2,25 @@ import React, { useEffect, useState } from "react";
 import { Form, FormGroup, Row, Col, Label, Input, Button } from "reactstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../Axios/Axios";
-
 import "./AddBookForm.css";
+import InputFormGroup from "../../Component/Common/InputFormGroup";
+
+const initialBookData = {
+  bookName: "",
+  author: "",
+  selectedBranch: null,
+  description: "",
+  stock: 0,
+  publisher: "",
+};
+
 const AddBookForm = (props) => {
-  const [branchList, setBranchList] = useState([]);
-  const [book_name, setBook_Name] = useState("");
-  const [branch_id, setBook_id] = useState("");
-  const [description, setDescription] = useState("");
-  const [stock, setStock] = useState("");
-  const [author, setAuthor] = useState("");
-  const [publisher, setPublisher] = useState("");
-
   const params = useParams();
-  console.log(params);
-
   const navigate = useNavigate();
+
+  const [branchList, setBranchList] = useState([]);
+  const [bookData, setBookData] = useState(initialBookData);
+
   const goToHomePage = () => {
     navigate("/");
     onSubmitHAndler();
@@ -45,12 +49,28 @@ const AddBookForm = (props) => {
     getApiDatas();
   }, []);
 
-  const onSubmitHAndler = async () => {
-    let item = { book_name, branch_id, author, publisher, stock, description };
+  const handleChange = ({ target }) => {
+    const { name, value } = target;
 
-    console.log(item);
+    const cloneBookData = { ...bookData };
+    cloneBookData[name] = value;
+    setBookData(cloneBookData);
+  };
+
+  const onSubmitHAndler = async () => {
+    const { bookName, author, selectedBranch, description, stock, publisher } =
+      bookData;
+    const body = {
+      book_name: bookName,
+      author,
+      branch: selectedBranch,
+      description,
+      stock,
+      publisher,
+    };
+
     try {
-      const res = await axios.post("/api/book/", item);
+      const res = await axios.post("/api/book/", body);
       console.log(res);
     } catch (err) {
       console.log(err);
@@ -66,79 +86,74 @@ const AddBookForm = (props) => {
       >
         <Row>
           <Col md={6}>
-            <FormGroup>
-              <Label for="exampleEmail">Book</Label>
-              <Input
-                onChange={(e) => setBook_Name(e.target.value)}
-                className="borders"
-                id="exampleName"
-                name="BookName"
-                placeholder="Book Name"
-                type="email"
-              />
-            </FormGroup>
+            <InputFormGroup
+              onChange={handleChange}
+              className="borders"
+              data={bookData}
+              name="bookName"
+              placeholder="Book Name"
+              type="email"
+              label="Book"
+            />
           </Col>
           <Col md={6}>
-            <FormGroup>
-              <Label for="examplePassword">Author's Name</Label>
-              <Input
-                onChange={(e) => setAuthor(e.target.value)}
-                className="borders"
-                id="exampleAuthor"
-                name="Author"
-                placeholder="Author's Name"
-                type="text"
-              />
-            </FormGroup>
+            <InputFormGroup
+              onChange={handleChange}
+              className="borders"
+              data={bookData}
+              name="author"
+              placeholder="Author's Name"
+              type="text"
+              label="Author's Name"
+            />
           </Col>
         </Row>
 
         <Row>
           <Col md={6}>
-            <FormGroup>
-              <Label for="examplePublisher">Publisher</Label>
-              <Input
-                onChange={(e) => setPublisher(e.target.value)}
-                className="borders"
-                id="examplePublisher"
-                name="publisher"
-              />
-            </FormGroup>
+            <InputFormGroup
+              onChange={handleChange}
+              className="borders"
+              data={bookData}
+              name="publisher"
+              placeholder="Enter Publisher"
+              type="text"
+              label="Publisher"
+            />
           </Col>
           <Col md={4}>
-            <FormGroup>
-              <Label for="branchName">Branch Name</Label>
-              <Input
-                onChange={(e) => setBook_id(e.target.value)}
-                className="borders"
-                id="branchName"
-                name="publishing-Year"
-              />
-            </FormGroup>
+            <InputFormGroup
+              onChange={handleChange}
+              className="borders"
+              data={bookData}
+              name="selectedBranch"
+              label="BranchId"
+            />
           </Col>
           <Col md={2}>
-            <FormGroup>
-              <Label for="exampleStock">Stock</Label>
-              <Input
-                onChange={(e) => setStock(e.target.value)}
-                className="borders"
-                id="exampleStock"
-                name="stock"
-                type="number"
-              />
-            </FormGroup>
+            <InputFormGroup
+              onChange={handleChange}
+              className="borders"
+              data={bookData}
+              placeholder="Enter Stock"
+              name="stock"
+              type="number"
+              label="Stock"
+            />
           </Col>
         </Row>
-        <FormGroup>
-          <Label for="exampleText">Description Of the Book</Label>
-          <Input
-            onChange={(e) => setDescription(e.target.value)}
+        <Row>
+          <InputFormGroup
+            onChange={handleChange}
             className="borders"
-            id="exampleText"
-            name="text"
+            data={bookData}
+            placeholder="Enter Description"
+            name="description"
             type="textarea"
+            label="Description"
           />
-        </FormGroup>
+        </Row>
+
         <div className="d-flex flex-row d-flex flex-row justify-content-center">
           <Button onClick={goToHomePage}>Submit</Button>
         </div>

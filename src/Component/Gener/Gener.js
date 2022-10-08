@@ -12,7 +12,6 @@ import "./Gener.css";
 
 const Gener = (props) => {
   const [branchList, setBranchList] = useState([]);
-  const [branch_name, setBranch_Name] = useState("");
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -20,19 +19,19 @@ const Gener = (props) => {
   const [toEditBranchName, setToEditBranchName] = useState("");
   const [actionLoader, setActionLoader] = useState(false);
 
+  useEffect(() => {
+    getApiData();
+  }, []);
+
   const getApiData = async () => {
     try {
-      const res = await axios.get("/api/branch?page=1&pageSize=10");
-      setBranchList(res.data.data.docs);
-      // setBranch_Name(res.data.data.docs[0].branch_name);
-      // setBranchId(res.data.data.docs[0]._id);
+      const res = await axios.get("/api/branch");
+      setBranchList(res.data.data);
     } catch (err) {
       console.log(console.log(err.message));
     }
   };
-  useEffect(() => {
-    getApiData();
-  }, []);
+
   /*------------*/
   const toggleAddModal = () => {
     setAddModalOpen((prev) => !prev);
