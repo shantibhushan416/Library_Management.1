@@ -7,7 +7,6 @@ import Table from "../../Component/Table/Table";
 import Search from "../../Component/Search/Search";
 import axios from "../Axios/Axios";
 import "./Lists.css";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const List = (props) => {
   const navigate = useNavigate();
@@ -23,9 +22,6 @@ const List = (props) => {
 
   const getBookList = async (newData) => {
     const newState = { ...state, ...newData };
-    if (!newState.search.trim()) {
-      delete newState.search;
-    }
 
     setState(newState);
     try {
@@ -77,7 +73,7 @@ const List = (props) => {
                   <h3 style={{ margin: "0" }}>Book List</h3>
 
                   <div className="d-flex flex-row">
-                    <Search />
+                    <Search onChange={(search) => getBookList({ search })} />
                     <Button color="primary" onClick={goToBookForm}>
                       Add Books
                     </Button>

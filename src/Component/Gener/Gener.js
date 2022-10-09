@@ -20,15 +20,16 @@ const Gener = (props) => {
   const [actionLoader, setActionLoader] = useState(false);
 
   useEffect(() => {
-    getApiData();
+    getBrancList();
   }, []);
 
-  const getApiData = async () => {
+  const getBrancList = async () => {
     try {
-      const res = await axios.get("/api/branch");
-      setBranchList(res.data.data);
+      const { data } = await axios.get("/api/branch");
+      console.log(data.data);
+      setBranchList(data.data);
     } catch (err) {
-      console.log(console.log(err.message));
+      console.log(err.message);
     }
   };
 
@@ -44,7 +45,7 @@ const Gener = (props) => {
         branch_name: branchName,
       });
       if (data.statusCode === 200) {
-        getApiData();
+        getBrancList();
         toggleAddModal();
         toast.success(data.message);
       }
@@ -70,7 +71,7 @@ const Gener = (props) => {
       setActionLoader(true);
       const { data } = await axios.delete(`/api/branch/${branchId}`);
       if (data.statusCode === 200) {
-        getApiData();
+        getBrancList();
         toggleDeleteModal();
         toast.success(data.message);
       }
@@ -98,7 +99,7 @@ const Gener = (props) => {
         branch_name: branchName,
       });
       if (data.statusCode === 200) {
-        getApiData();
+        getBrancList();
         toggleEditModal();
       }
     } catch (error) {

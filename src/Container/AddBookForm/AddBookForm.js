@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Form, FormGroup, Row, Col, Label, Input, Button } from "reactstrap";
+import { toast } from "react-toastify";
+import Select from "react-select";
+import { Form, Row, Col, Button, Spinner, Label } from "reactstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../Axios/Axios";
 import "./AddBookForm.css";
@@ -18,62 +20,59 @@ const AddBookForm = (props) => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [branchList, setBranchList] = useState([]);
   const [bookData, setBookData] = useState(initialBookData);
-
-  const goToHomePage = () => {
-    navigate("/");
-    onSubmitHAndler();
-    getApiData();
-  };
-  const getApiData = async () => {
-    try {
-      await axios.get("/api/book?page=1&pageSize=20");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getApiDatas = async () => {
-    try {
-      const res = await axios.get("/api/branch?page=1&pageSize=10");
-      console.log(res.data.data.docs);
-      setBranchList(res.data.data.docs);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [actionLoader, setActionLoader] = useState(false);
+  const [userError, setUserError] = useState(false);
+  const [branchList, setBranchList] = useState([]);
 
   useEffect(() => {
-    getApiData();
-    getApiDatas();
+    getBrancList();
   }, []);
 
-  const handleChange = ({ target }) => {
-    const { name, value } = target;
-
+  const handleChange = ({ target: { name, value } }) => {
     const cloneBookData = { ...bookData };
     cloneBookData[name] = value;
     setBookData(cloneBookData);
   };
 
-  const onSubmitHAndler = async () => {
+  const onSubmitHAndler = async (e) => {
+    e.preventDefault();
     const { bookName, author, selectedBranch, description, stock, publisher } =
       bookData;
     const body = {
       book_name: bookName,
       author,
-      branch: selectedBranch,
+      branch: selectedBranch?.value,
       description,
       stock,
       publisher,
     };
 
     try {
-      const res = await axios.post("/api/book/", body);
-      console.log(res);
+      setActionLoader(true);
+      const { data } = await axios.post("/api/book/", body);
+      if (data.statusCode === 200) {
+        toast.success(data.message);
+        navigate("/");
+      }
     } catch (err) {
       console.log(err);
+    } finally {
+      setActionLoader(false);
+    }
+  };
+  const getBrancList = async () => {
+    try {
+      const { data } = await axios.get("/api/branch");
+      console.log(data.data);
+
+      const branchList = data.data.map(({ _id, branch_name }) => {
+        return { label: branch_name, value: _id };
+      });
+      console.log(branchList);
+      setBranchList(branchList);
+    } catch (err) {
+      console.log(err.message);
     }
   };
 
@@ -81,6 +80,7 @@ const AddBookForm = (props) => {
     <div>
       <h1 className="text-center">Add Book</h1>
       <Form
+        onSubmit={onSubmitHAndler}
         style={{ margin: "1rem  10rem", padding: "1rem 3rem" }}
         className="forms rounded-3 "
       >
@@ -91,9 +91,11 @@ const AddBookForm = (props) => {
               className="borders"
               data={bookData}
               name="bookName"
-              placeholder="Book Name"
-              type="email"
+              placeholder="Enter Book Name"
+              type="text"
               label="Book"
+              userError={userError}
+              autocomplete="off"
             />
           </Col>
           <Col md={6}>
@@ -102,9 +104,11 @@ const AddBookForm = (props) => {
               className="borders"
               data={bookData}
               name="author"
-              placeholder="Author's Name"
+              placeholder="Enter Author's Name"
               type="text"
               label="Author's Name"
+              userError={userError}
+              autocomplete="off"
             />
           </Col>
         </Row>
@@ -119,15 +123,21 @@ const AddBookForm = (props) => {
               placeholder="Enter Publisher"
               type="text"
               label="Publisher"
+              userError={userError}
+              autocomplete="off"
             />
           </Col>
           <Col md={4}>
-            <InputFormGroup
-              onChange={handleChange}
-              className="borders"
-              data={bookData}
+            <Label>BranchId</Label>
+            <Select
+              onChange={(value, { name }) =>
+                handleChange({ target: { name, value } })
+              }
               name="selectedBranch"
-              label="BranchId"
+              value={bookData.selectedBranch}
+              placeholder="Enter Branch Name"
+              options={branchList}
+              userError={userError}
             />
           </Col>
           <Col md={2}>
@@ -139,6 +149,8 @@ const AddBookForm = (props) => {
               name="stock"
               type="number"
               label="Stock"
+              userError={userError}
+              autocomplete="off"
             />
           </Col>
         </Row>
@@ -151,11 +163,20 @@ const AddBookForm = (props) => {
             name="description"
             type="textarea"
             label="Description"
+            userError={userError}
+            autocomplete="off"
           />
         </Row>
 
         <div className="d-flex flex-row d-flex flex-row justify-content-center">
-          <Button onClick={goToHomePage}>Submit</Button>
+          <Button>
+            {actionLoader && (
+              <Spinner className="me-2" size="sm">
+                Loading
+              </Spinner>
+            )}
+            Submit
+          </Button>
         </div>
       </Form>
     </div>

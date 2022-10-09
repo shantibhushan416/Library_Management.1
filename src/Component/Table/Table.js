@@ -9,16 +9,17 @@ import "./Table.css";
 export default function Table(props) {
   const { booklist, pageNo, pageSize, totalBooks, loading, onPageChange } =
     props;
-  console.log(booklist);
+
   const navigate = useNavigate();
 
   const getColumns = () => {
     return [
       { Header: <strong>Books Name</strong>, accessor: "book_name" },
+      { Header: <strong>Branch Name</strong>, accessor: "branch.branch_name" },
       { Header: <strong>Author</strong>, accessor: "author" },
       { Header: <strong>Publisher</strong>, accessor: "publisher" },
-      { Header: <strong>Description</strong>, accessor: "description" },
       { Header: <strong>Stock</strong>, accessor: "stock" },
+      { Header: <strong>Issued</strong>, accessor: "issued" },
       {
         Header: <strong>Action</strong>,
         Cell: ({ original }) => {
