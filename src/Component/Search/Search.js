@@ -5,7 +5,7 @@ const Search = (props) => {
   return (
     <div>
       <Input
-        onChange={props.onChange}
+        onChange={(e) => props.onChange(e.target.value)}
         placeholder="search-book"
         type="search"
         style={{ width: "9rem", marginRight: "1rem" }}

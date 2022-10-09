@@ -131,8 +131,8 @@ const Gener = (props) => {
         onConfirmation={onDeleteConfirmation}
       />
       <Card style={{ width: "80%" }}>
-        <CardHeader>All</CardHeader>
         <ListGroup flush>
+          <ListGroupItem>All</ListGroupItem>
           {branchList.map((item, index) => {
             return (
               <ListGroupItem

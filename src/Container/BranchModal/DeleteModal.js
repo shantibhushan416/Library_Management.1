@@ -9,6 +9,7 @@ const DeleteModal = (props) => {
         <ModalHeader toggle={toggle}>
           Are you sure you want to delete ?
         </ModalHeader>
+
         <ModalFooter>
           <Button color="primary" onClick={onConfirmation}>
             {actionLoader && <Spinner className="me-2" size="sm" />}

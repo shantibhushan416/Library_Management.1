@@ -19,6 +19,7 @@ const initialBookData = {
 const AddBookForm = (props) => {
   const params = useParams();
   const navigate = useNavigate();
+  const isEditing = params.id !== "new";
 
   const [bookData, setBookData] = useState(initialBookData);
   const [actionLoader, setActionLoader] = useState(false);
@@ -28,6 +29,27 @@ const AddBookForm = (props) => {
   useEffect(() => {
     getBrancList();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (isEditing) {
+        const details = await getBookDetails(params.id);
+        const { book_name, author, branch, description, publisher, stock } =
+          details;
+        console.log(details);
+        const selectedBranch = { label: branch.branch_name, value: branch._id };
+        const bookData = {
+          bookName: book_name,
+          author,
+          description,
+          selectedBranch,
+          publisher,
+          stock,
+        };
+        setBookData(bookData);
+      }
+    })();
+  }, [params]);
 
   const handleChange = ({ target: { name, value } }) => {
     const cloneBookData = { ...bookData };
@@ -75,10 +97,18 @@ const AddBookForm = (props) => {
       console.log(err.message);
     }
   };
+  const getBookDetails = async (bookId) => {
+    try {
+      const { data } = await axios.get(`/api/book/${bookId}`);
+      return data.data;
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
 
   return (
     <div>
-      <h1 className="text-center">Add Book</h1>
+      <h1 className="text-center">{`${isEditing ? "Edit" : "Add"} Book`}</h1>
       <Form
         onSubmit={onSubmitHAndler}
         style={{ margin: "1rem  10rem", padding: "1rem 3rem" }}
@@ -128,7 +158,7 @@ const AddBookForm = (props) => {
             />
           </Col>
           <Col md={4}>
-            <Label>BranchId</Label>
+            <Label>Branch</Label>
             <Select
               onChange={(value, { name }) =>
                 handleChange({ target: { name, value } })
@@ -148,6 +178,7 @@ const AddBookForm = (props) => {
               placeholder="Enter Stock"
               name="stock"
               type="number"
+              min={0}
               label="Stock"
               userError={userError}
               autocomplete="off"

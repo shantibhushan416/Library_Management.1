@@ -21,13 +21,13 @@ function Navigation() {
           LIBRARY MANAGEMENT
         </NavbarBrand>
         <Nav className="me-auto" navbar></Nav>
-        <li
+        {/* <li
           onClick={goToAuth}
           style={{ listStyle: "none", cursor: "pointer" }}
           className="text-light"
         >
           Log Out
-        </li>
+        </li> */}
       </Navbar>
     </div>
   );
