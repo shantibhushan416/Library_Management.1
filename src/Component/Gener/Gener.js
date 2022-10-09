@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Card, CardHeader, ListGroup, ListGroupItem } from "reactstrap";
+import { Card, ListGroup, ListGroupItem } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { faPlus, faPenToSquare, faL } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import axios from "../../Container/Axios/Axios";
 import AddModal from "../../Container/BranchModal/AddModal";
 import DeleteModal from "../../Container/BranchModal/DeleteModal";
