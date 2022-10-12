@@ -8,7 +8,7 @@ import axios from "../../Container/Axios/Axios";
 import AddModal from "../../Container/BranchModal/AddModal";
 import DeleteModal from "../../Container/BranchModal/DeleteModal";
 import EditModal from "../../Container/BranchModal/EditModal";
-import "./Gener.css";
+import "./BranchList.css";
 
 const Gener = (props) => {
   const [branchList, setBranchList] = useState([]);

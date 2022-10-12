@@ -5,6 +5,8 @@ import Auth from "./Container/Authentication/Auth";
 import Navigation from "./Container/Navigation/NavBar";
 import Home from "./Container/Home/Home";
 import AddBookForm from "./Container/AddBookForm/AddBookForm";
+import StudentList from "./Component/StudentList/StudentList";
+import StudentForm from "./Container/StudentForm/StudentForm";
 import "react-toastify/dist/ReactToastify.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
@@ -16,7 +18,8 @@ function App() {
         <Route path="/add-book/:id" element={<AddBookForm />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/" element={<Home />} />
-        <Route path="/" element={<Navigate to="/" />} />
+        <Route path="/studentlist" element={<StudentList />} />
+        <Route path="/studentform" element={<StudentForm />} />
       </Routes>
       <ToastContainer />
     </div>

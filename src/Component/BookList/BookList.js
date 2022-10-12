@@ -4,7 +4,7 @@ import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ReactTable from "react-table";
 import { useNavigate } from "react-router-dom";
 import "react-table/react-table.css";
-import "./Table.css";
+import "./BookList.css";
 
 export default function Table(props) {
   const { booklist, pageNo, pageSize, totalBooks, loading, onPageChange } =

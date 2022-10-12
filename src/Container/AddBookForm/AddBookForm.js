@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Select from "react-select";
-import { Form, Row, Col, Button, Spinner, Label } from "reactstrap";
+import { Form, Row, Col, Button, Spinner, Label, Container } from "reactstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../Axios/Axios";
 import "./AddBookForm.css";
@@ -23,7 +23,6 @@ const AddBookForm = (props) => {
 
   const [bookData, setBookData] = useState(initialBookData);
   const [actionLoader, setActionLoader] = useState(false);
-  const [userError, setUserError] = useState(false);
   const [branchList, setBranchList] = useState([]);
 
   useEffect(() => {
@@ -36,7 +35,6 @@ const AddBookForm = (props) => {
         const details = await getBookDetails(params.id);
         const { book_name, author, branch, description, publisher, stock } =
           details;
-        console.log(details);
         const selectedBranch = { label: branch.branch_name, value: branch._id };
         const bookData = {
           bookName: book_name,
@@ -46,6 +44,7 @@ const AddBookForm = (props) => {
           publisher,
           stock,
         };
+
         setBookData(bookData);
       }
     })();
@@ -86,12 +85,10 @@ const AddBookForm = (props) => {
   const getBrancList = async () => {
     try {
       const { data } = await axios.get("/api/branch");
-      console.log(data.data);
-
       const branchList = data.data.map(({ _id, branch_name }) => {
         return { label: branch_name, value: _id };
       });
-      console.log(branchList);
+
       setBranchList(branchList);
     } catch (err) {
       console.log(err.message);
@@ -108,12 +105,20 @@ const AddBookForm = (props) => {
 
   return (
     <div>
-      <h1 className="text-center">{`${isEditing ? "Edit" : "Add"} Book`}</h1>
       <Form
         onSubmit={onSubmitHAndler}
         style={{ margin: "1rem  10rem", padding: "1rem 3rem" }}
         className="forms rounded-3 "
       >
+        <Container
+          fluid
+          className="bg-light d-flex flex-row justify-content-between align-items-center mb-2 p-0"
+        >
+          <h1 className="text-center">{`${
+            isEditing ? "Edit" : "Add"
+          } Book`}</h1>
+          <Button onClick={() => navigate("/")}>Back-{">"}</Button>
+        </Container>
         <Row>
           <Col md={6}>
             <InputFormGroup
@@ -124,7 +129,6 @@ const AddBookForm = (props) => {
               placeholder="Enter Book Name"
               type="text"
               label="Book"
-              userError={userError}
               autocomplete="off"
             />
           </Col>
@@ -137,7 +141,6 @@ const AddBookForm = (props) => {
               placeholder="Enter Author's Name"
               type="text"
               label="Author's Name"
-              userError={userError}
               autocomplete="off"
             />
           </Col>
@@ -153,7 +156,6 @@ const AddBookForm = (props) => {
               placeholder="Enter Publisher"
               type="text"
               label="Publisher"
-              userError={userError}
               autocomplete="off"
             />
           </Col>
@@ -167,7 +169,6 @@ const AddBookForm = (props) => {
               value={bookData.selectedBranch}
               placeholder="Enter Branch Name"
               options={branchList}
-              userError={userError}
             />
           </Col>
           <Col md={2}>
@@ -180,7 +181,6 @@ const AddBookForm = (props) => {
               type="number"
               min={0}
               label="Stock"
-              userError={userError}
               autocomplete="off"
             />
           </Col>
@@ -194,7 +194,6 @@ const AddBookForm = (props) => {
             name="description"
             type="textarea"
             label="Description"
-            userError={userError}
             autocomplete="off"
           />
         </Row>
