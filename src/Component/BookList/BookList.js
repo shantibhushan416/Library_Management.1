@@ -5,15 +5,17 @@ import ReactTable from "react-table";
 import { useNavigate } from "react-router-dom";
 import "react-table/react-table.css";
 import "./BookList.css";
+import { getLocalStorageData } from "../../utils/utility";
 
 export default function Table(props) {
   const { booklist, pageNo, pageSize, totalBooks, loading, onPageChange } =
     props;
 
   const navigate = useNavigate();
+  const isLogedIn = !!getLocalStorageData();
 
   const getColumns = () => {
-    return [
+    const coloumns = [
       { Header: <strong>Books Name</strong>, accessor: "book_name" },
       { Header: <strong>Branch Name</strong>, accessor: "branch.branch_name" },
       { Header: <strong>Author</strong>, accessor: "author" },
@@ -22,6 +24,7 @@ export default function Table(props) {
       { Header: <strong>Issued</strong>, accessor: "issued" },
       {
         Header: <strong>Action</strong>,
+        columnName: "action",
         Cell: ({ original }) => {
           return (
             <div className="text-center">
@@ -36,6 +39,10 @@ export default function Table(props) {
         },
       },
     ];
+
+    return coloumns.filter(
+      ({ columnName }) => isLogedIn || columnName !== "action"
+    );
   };
 
   return (

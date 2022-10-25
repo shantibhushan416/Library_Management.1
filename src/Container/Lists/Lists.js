@@ -23,6 +23,8 @@ const List = (props) => {
   const getBookList = async (newData) => {
     const newState = { ...state, ...newData };
 
+    if (!newState.search) delete newState.search;
+
     setState(newState);
     try {
       setLoading(true);

@@ -23,6 +23,7 @@ const AddBookForm = (props) => {
 
   const [bookData, setBookData] = useState(initialBookData);
   const [actionLoader, setActionLoader] = useState(false);
+  const [useError, setUseError] = useState(false);
   const [branchList, setBranchList] = useState([]);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const AddBookForm = (props) => {
   const handleChange = ({ target: { name, value } }) => {
     const cloneBookData = { ...bookData };
     cloneBookData[name] = value;
+
     setBookData(cloneBookData);
   };
 
@@ -117,7 +119,7 @@ const AddBookForm = (props) => {
           <h1 className="text-center">{`${
             isEditing ? "Edit" : "Add"
           } Book`}</h1>
-          <Button onClick={() => navigate("/")}>Back-{">"}</Button>
+          <Button onClick={() => navigate(-1)}>Back-{">"}</Button>
         </Container>
         <Row>
           <Col md={6}>

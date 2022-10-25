@@ -6,7 +6,6 @@ import Navigation from "./Container/Navigation/NavBar";
 import Home from "./Container/Home/Home";
 import AddBookForm from "./Container/AddBookForm/AddBookForm";
 import StudentList from "./Component/StudentList/StudentList";
-import StudentForm from "./Container/StudentForm/StudentForm";
 import "react-toastify/dist/ReactToastify.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
@@ -19,7 +18,6 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/" element={<Home />} />
         <Route path="/studentlist" element={<StudentList />} />
-        <Route path="/studentform" element={<StudentForm />} />
       </Routes>
       <ToastContainer />
     </div>

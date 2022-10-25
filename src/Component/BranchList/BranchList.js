@@ -74,9 +74,11 @@ const Gener = (props) => {
         getBrancList();
         toggleDeleteModal();
         toast.success(data.message);
+      } else {
+        toast.error(data.message);
       }
-    } catch (error) {
-      console.log(error);
+    } catch ({ response: { data } }) {
+      toast.error(data.message);
     } finally {
       setActionLoader(false);
     }

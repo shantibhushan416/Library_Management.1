@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getLocalStorageData } from "../../utils/utility";
 
 const api = axios.create({
   baseURL: "https://librarybackendapp.herokuapp.com",
@@ -6,9 +7,11 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    // console.log("config", getLocalStorageData());
+    config.headers.Authorization = getLocalStorageData()?.token;
     return config;
   },
-  function (error) {
+  (error) => {
     // Do something with request error
     return Promise.reject(error);
   }
@@ -18,7 +21,7 @@ api.interceptors.response.use(
   (response) => {
     return response;
   },
-  function (error) {
+  (error) => {
     return Promise.reject(error);
   }
 );
