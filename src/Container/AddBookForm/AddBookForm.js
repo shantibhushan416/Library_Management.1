@@ -23,7 +23,6 @@ const AddBookForm = (props) => {
 
   const [bookData, setBookData] = useState(initialBookData);
   const [actionLoader, setActionLoader] = useState(false);
-  const [useError, setUseError] = useState(false);
   const [branchList, setBranchList] = useState([]);
 
   useEffect(() => {
@@ -51,6 +50,9 @@ const AddBookForm = (props) => {
     })();
   }, [params]);
 
+  //useEffect doesnot accept any asycn function as callback
+  //if u have give useEffect asycn sunction then u have to use "IIFE"
+
   const handleChange = ({ target: { name, value } }) => {
     const cloneBookData = { ...bookData };
     cloneBookData[name] = value;
@@ -73,7 +75,9 @@ const AddBookForm = (props) => {
 
     try {
       setActionLoader(true);
-      const { data } = await axios.post("/api/book/", body);
+      const { data } = isEditing
+        ? await axios.put(`/api/book/${params.id}`, body)
+        : await axios.post("/api/book", body);
       if (data.statusCode === 200) {
         toast.success(data.message);
         navigate("/");

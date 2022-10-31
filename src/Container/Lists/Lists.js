@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Card, CardTitle, Container, Row, Col, Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Genre from "../../Component/BranchList/BranchList";
-import Table from "../../Component/BookList/BookList";
+import BranchList from "../../Component/BranchList/BranchList";
+import Booklist from "../../Component/BookList/BookList";
 import Search from "../../Component/Search/Search";
 import axios from "../Axios/Axios";
 import "./Lists.css";
+import { getLocalStorageData } from "../../utils/utility";
 
 const List = (props) => {
   const navigate = useNavigate();
+  const isLogedIn = !!getLocalStorageData();
 
   const [state, setState] = useState({ pageNo: 1, pageSize: 10, search: "" });
   const [booklist, setBookList] = useState([]);
@@ -55,14 +57,18 @@ const List = (props) => {
 
   return (
     <>
-      <Container fluid className=" mt-3">
+      <Container
+        fluid
+        className="d-flex flex-column justify-content-center "
+        style={{ width: "100%", height: "95vh" }}
+      >
         <Row>
           <Col sm="4">
             <Card body>
               <CardTitle className="bg-light">
                 <h3>Branch</h3>
               </CardTitle>
-              <Genre />
+              <BranchList />
             </Card>
           </Col>
           <Col>
@@ -76,13 +82,15 @@ const List = (props) => {
 
                   <div className="d-flex flex-row">
                     <Search onChange={(search) => getBookList({ search })} />
-                    <Button color="primary" onClick={goToBookForm}>
-                      Add Books
-                    </Button>
+                    {isLogedIn ? (
+                      <Button color="primary" onClick={goToBookForm}>
+                        Add Books
+                      </Button>
+                    ) : null}
                   </div>
                 </Container>
               </CardTitle>
-              <Table
+              <Booklist
                 {...state}
                 booklist={booklist}
                 totalBooks={totalBooks}

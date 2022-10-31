@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Card, ListGroup, ListGroupItem } from "reactstrap";
+import { Card } from "reactstrap";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faPlus, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +10,7 @@ import AddModal from "../../Container/BranchModal/AddModal";
 import DeleteModal from "../../Container/BranchModal/DeleteModal";
 import EditModal from "../../Container/BranchModal/EditModal";
 import "./BranchList.css";
+import { getLocalStorageData } from "../../utils/utility";
 
 const Gener = (props) => {
   const [branchList, setBranchList] = useState([]);
@@ -23,6 +25,7 @@ const Gener = (props) => {
     getBrancList();
   }, []);
 
+  const isLogedIn = !!getLocalStorageData();
   const getBrancList = async () => {
     try {
       const { data } = await axios.get("/api/branch");
@@ -111,6 +114,10 @@ const Gener = (props) => {
     }
   };
 
+  const onClickBranch = (id) => {
+    console.log("branch", id);
+  };
+
   return (
     <>
       <AddModal
@@ -133,35 +140,43 @@ const Gener = (props) => {
         onConfirmation={onDeleteConfirmation}
       />
       <Card style={{ width: "80%" }}>
-        <ListGroup flush>
-          <ListGroupItem>All</ListGroupItem>
+        <ListGroup variant="flush">
+          <ListGroup.Item action>All</ListGroup.Item>
           {branchList.map((item, index) => {
             return (
-              <ListGroupItem
+              <ListGroup.Item
                 key={index}
                 id={index}
-                className="d-flex flex-row justify-content-between"
+                onClick={() => onClickBranch(item._id)}
+                action
+                className="  border-bottom d-flex flex-row justify-content-between p-2"
               >
                 {item.branch_name}
 
-                <div>
-                  <FontAwesomeIcon
-                    icon={faPenToSquare}
-                    onClick={() => handleEditBranch(item._id, item.branch_name)}
-                    className="me-1"
-                  />
-                  <FontAwesomeIcon
-                    onClick={() => handleDeleteBranch(item._id)}
-                    icon="trash"
-                  />
-                </div>
-              </ListGroupItem>
+                {isLogedIn ? (
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      onClick={() =>
+                        handleEditBranch(item._id, item.branch_name)
+                      }
+                      className="me-1"
+                    />
+                    <FontAwesomeIcon
+                      onClick={() => handleDeleteBranch(item._id)}
+                      icon="trash"
+                    />
+                  </div>
+                ) : null}
+              </ListGroup.Item>
             );
           })}
 
-          <ListGroupItem className="d-flex justify-content-center">
-            <FontAwesomeIcon icon={faPlus} onClick={toggleAddModal} />
-          </ListGroupItem>
+          {isLogedIn ? (
+            <li className="d-flex  justify-content-center  p-2">
+              <FontAwesomeIcon icon={faPlus} onClick={toggleAddModal} />
+            </li>
+          ) : null}
         </ListGroup>
       </Card>
     </>

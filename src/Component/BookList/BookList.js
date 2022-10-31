@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import ReactTable from "react-table";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { getLocalStorageData } from "../../utils/utility";
+import DeleteModal from "../../Container/BranchModal/DeleteModal";
+import axios from "../../Container/Axios/Axios";
 import "react-table/react-table.css";
 import "./BookList.css";
-import { getLocalStorageData } from "../../utils/utility";
 
 export default function Table(props) {
   const { booklist, pageNo, pageSize, totalBooks, loading, onPageChange } =
@@ -13,6 +16,37 @@ export default function Table(props) {
 
   const navigate = useNavigate();
   const isLogedIn = !!getLocalStorageData();
+
+  const [bookId, setBookId] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [actionLoader, setActionLoader] = useState(false);
+
+  const handleDeleteBranch = (bookid) => {
+    setBookId(bookid);
+    toggleDeleteModal();
+  };
+
+  const toggleDeleteModal = () => {
+    setDeleteModalOpen((prev) => !prev);
+  };
+
+  const onDeleteConfirmation = async () => {
+    try {
+      setActionLoader(true);
+      const { data } = await axios.delete(`/api/book/${bookId}`);
+      if (data.statusCode === 200) {
+        toggleDeleteModal();
+        window.location.reload();
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch ({ response: { data } }) {
+      toast.error(data.message);
+    } finally {
+      setActionLoader(false);
+    }
+  };
 
   const getColumns = () => {
     const coloumns = [
@@ -33,7 +67,10 @@ export default function Table(props) {
                 icon={faPenToSquare}
                 className="me-2"
               />
-              <FontAwesomeIcon icon={faTrash} />
+              <FontAwesomeIcon
+                onClick={() => handleDeleteBranch(original._id)}
+                icon={faTrash}
+              />
             </div>
           );
         },
@@ -46,22 +83,30 @@ export default function Table(props) {
   };
 
   return (
-    <div>
-      <ReactTable
-        data={booklist}
-        columns={getColumns()}
-        minRows={5}
-        defaultPageSize={10}
-        className="Table -striped -highlight rounded-1 me-0 text-center"
-        manual
-        sortable={false}
-        showPageSizeOptions={false}
-        noDataText="No book found"
-        pages={Math.ceil(totalBooks / pageSize)}
-        loading={loading}
-        page={pageNo - 1}
-        onPageChange={(page) => onPageChange(page + 1)}
+    <>
+      <DeleteModal
+        actionLoader={actionLoader}
+        isOpen={deleteModalOpen}
+        toggle={toggleDeleteModal}
+        onConfirmation={onDeleteConfirmation}
       />
-    </div>
+      <div>
+        <ReactTable
+          data={booklist}
+          columns={getColumns()}
+          minRows={5}
+          defaultPageSize={10}
+          className="Table -striped -highlight rounded-1 me-0 text-center"
+          manual
+          sortable={false}
+          showPageSizeOptions={false}
+          noDataText="No book found"
+          pages={Math.ceil(totalBooks / pageSize)}
+          loading={loading}
+          page={pageNo - 1} // its takes 0 as one
+          onPageChange={(page) => onPageChange(page + 1)}
+        />
+      </div>
+    </>
   );
 }

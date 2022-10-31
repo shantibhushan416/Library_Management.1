@@ -27,7 +27,7 @@ function Navigation() {
   };
 
   return (
-    <div>
+    <div style={{ position: "fixed", width: "100%" }}>
       <Navbar className="NavBar">
         <Logo clicked={goHomePage} />
 
@@ -35,15 +35,26 @@ function Navigation() {
           LIBRARY MANAGEMENT
         </NavbarBrand>
         <Nav className="me-auto" navbar></Nav>
+        {location.pathname !== "/studentlist" ? (
+          <li
+            onClick={() => navigate("/studentlist")}
+            style={{ listStyle: "none", cursor: "pointer" }}
+            className="text-light me-3"
+          >
+            Students
+          </li>
+        ) : null}
         {location.pathname !== "/auth" &&
           (isLogedIn ? (
-            <li
-              onClick={storageClear}
-              style={{ listStyle: "none", cursor: "pointer" }}
-              className="text-light"
-            >
-              Log out
-            </li>
+            <>
+              <li
+                onClick={storageClear}
+                style={{ listStyle: "none", cursor: "pointer" }}
+                className="text-light"
+              >
+                Log out
+              </li>
+            </>
           ) : (
             <li
               onClick={goToAuth}
