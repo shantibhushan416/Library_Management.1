@@ -28,14 +28,14 @@ function IssueBook(props) {
   return (
     <div>
       <Modal isOpen={isOpen} backdrop={false} toggle={toggle}>
-        <ModalHeader toggle={toggle}>IssueBook</ModalHeader>
+        <ModalHeader toggle={toggle}>Issue Book</ModalHeader>
         <ModalBody>
           <Input
             value={branchName}
             type="text"
             name="branchName"
             onChange={(e) => setBranchName(e.target.value)}
-            placeholder="Branch Name"
+            placeholder="Book Name"
           />
         </ModalBody>
         <ModalFooter>

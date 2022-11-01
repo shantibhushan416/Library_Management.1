@@ -231,11 +231,13 @@ export default function StudentList(props) {
                   value={state.selectedBook}
                   isClearable={true}
                 />
-                <Button
-                  onClick={() => navigate("/studentlist/studentform/new")}
-                >
-                  Register
-                </Button>
+                {isLogedIn ? (
+                  <Button
+                    onClick={() => navigate("/studentlist/studentform/new")}
+                  >
+                    Register
+                  </Button>
+                ) : null}
               </div>
             </Container>
           </CardTitle>
