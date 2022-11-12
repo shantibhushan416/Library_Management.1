@@ -22,6 +22,7 @@ const AddBookForm = (props) => {
   const isEditing = params.id !== "new";
 
   const [bookData, setBookData] = useState(initialBookData);
+  const [errors, setErrors] = useState({});
   const [actionLoader, setActionLoader] = useState(false);
   const [branchList, setBranchList] = useState([]);
 
@@ -55,10 +56,24 @@ const AddBookForm = (props) => {
 
   const handleChange = ({ target: { name, value } }) => {
     const cloneBookData = { ...bookData };
+    console.log(value);
+    if (typeof value === "string") {
+      if (!value.trim()) {
+        setErrors((prev) => ({ ...prev, [name]: "Required" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      }
+    } else {
+      if (value) {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: "Required" }));
+      }
+    }
     cloneBookData[name] = value;
-
     setBookData(cloneBookData);
   };
+  console.log(errors);
 
   const onSubmitHAndler = async (e) => {
     e.preventDefault();
@@ -110,7 +125,10 @@ const AddBookForm = (props) => {
   };
 
   return (
-    <div>
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{ height: "100vh" }}
+    >
       <Form
         onSubmit={onSubmitHAndler}
         style={{ margin: "1rem  10rem", padding: "1rem 3rem" }}
@@ -135,6 +153,7 @@ const AddBookForm = (props) => {
               placeholder="Enter Book Name"
               type="text"
               label="Book"
+              errors={errors}
               autocomplete="off"
             />
           </Col>
@@ -147,6 +166,7 @@ const AddBookForm = (props) => {
               placeholder="Enter Author's Name"
               type="text"
               label="Author's Name"
+              errors={errors}
               autocomplete="off"
             />
           </Col>
@@ -162,6 +182,7 @@ const AddBookForm = (props) => {
               placeholder="Enter Publisher"
               type="text"
               label="Publisher"
+              errors={errors}
               autocomplete="off"
             />
           </Col>
@@ -175,7 +196,9 @@ const AddBookForm = (props) => {
               value={bookData.selectedBranch}
               placeholder="Enter Branch Name"
               options={branchList}
+              isClearable={true}
             />
+            <span> {errors["selectedBranch"]}</span>
           </Col>
           <Col md={2}>
             <InputFormGroup
@@ -186,6 +209,7 @@ const AddBookForm = (props) => {
               name="stock"
               type="number"
               min={0}
+              errors={errors}
               label="Stock"
               autocomplete="off"
             />
@@ -200,6 +224,7 @@ const AddBookForm = (props) => {
             name="description"
             type="textarea"
             label="Description"
+            errors={errors}
             autocomplete="off"
           />
         </Row>

@@ -19,6 +19,7 @@ const AddBookForm = (props) => {
   const isEditing = params.id !== "new";
 
   const [studentData, setStudentData] = useState(initialStudentData);
+  const [errors, setErrors] = useState({});
   const [actionLoader, setActionLoader] = useState(false);
 
   useEffect(() => {
@@ -73,6 +74,19 @@ const AddBookForm = (props) => {
 
   const handleChange = ({ target: { name, value } }) => {
     const cloneStudentData = { ...studentData };
+    if (typeof value === "string") {
+      if (!value.trim()) {
+        setErrors((prev) => ({ ...prev, [name]: "Required" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      }
+    } else {
+      if (value) {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: "Required" }));
+      }
+    }
     cloneStudentData[name] = value;
     setStudentData(cloneStudentData);
   };
@@ -132,6 +146,7 @@ const AddBookForm = (props) => {
               name="studentName"
               placeholder="Enter Name"
               type="text"
+              errors={errors}
               label="Student Name"
             />
             <Label>Branch</Label>
@@ -139,17 +154,20 @@ const AddBookForm = (props) => {
               onChange={(value, { name }) =>
                 handleChange({ target: { name, value } })
               }
-              name="selectedBranch"
               className="mb-3"
+              name="selectedBranch"
               value={studentData.selectedBranch}
               placeholder="Enter Branch "
               loadOptions={getBranchList}
+              isClearable={true}
             />
+            <span> {errors["selectedBranch"]}</span>
             <InputFormGroup
               onChange={handleChange}
               data={studentData}
               name="email"
               placeholder="Enter Email"
+              errors={errors}
               type="email"
               label="Email"
             />

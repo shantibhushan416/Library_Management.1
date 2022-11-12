@@ -16,6 +16,7 @@ const Auth = (props) => {
   const navigate = useNavigate();
 
   const [logIn, SetLogIn] = useState(logInData);
+  const [errors, setErrors] = useState({});
   const [actionLoader, setActionLoader] = useState(false);
 
   useEffect(() => {
@@ -28,6 +29,13 @@ const Auth = (props) => {
 
   const handleChange = ({ target: { name, value } }) => {
     const clonelogInData = { ...logIn };
+    if (typeof value === "string") {
+      if (!value.trim()) {
+        setErrors((prev) => ({ ...prev, [name]: "Required" }));
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+      }
+    }
     clonelogInData[name] = value;
     SetLogIn(clonelogInData);
   };
@@ -80,6 +88,7 @@ const Auth = (props) => {
               data={logIn}
               name="email"
               placeholder="Enter Email"
+              errors={errors}
               type="email"
               label="Email"
             />
@@ -90,6 +99,7 @@ const Auth = (props) => {
               data={logIn}
               name="password"
               placeholder="Enter Password"
+              errors={errors}
               type="password"
               label="Password"
             />
